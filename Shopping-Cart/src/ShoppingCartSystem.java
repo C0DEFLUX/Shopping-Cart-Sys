@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 class Item
 {
@@ -17,7 +18,7 @@ class Item
         this.discount = discount;
     }
 
-    //Calc the total price item with discount
+    //Calculate the total price with the discount
     public double getTotalPrice()
     {
         double effectivePrice = price * (1 - discount / 100);
@@ -25,57 +26,87 @@ class Item
     }
 
     @Override
-    //Format the list
     public String toString()
     {
-        //Format the list using the .format() function.
+        //Format the item list
         return String.format("Item: %s, Price: %.2f, Quantity: %d, Discount: %.2f%%", name, price, quantity, discount);
     }
 }
 
 class ShoppingCart
 {
-    //List capable of holding multiple Item objects.
     private List<Item> cart;
-
     //Constructor
     public ShoppingCart()
     {
-        //Dynamic array to avoid shifting items in a standard array
         cart = new ArrayList<>();
     }
 
-    //METHOD 1 - Add item with name and price
-    public void addItem(String name, double price)
+    //METHOD 1 - Add item name and price
+    public void addItem()
     {
+        Scanner scanner = new Scanner(System.in);
+
+        // Get item name and price from the user
+        System.out.print("Enter item name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter item price: ");
+        double price = scanner.nextDouble();
+
         addItem(name, price, 1, 0);
     }
 
-    //METHOD 2 - Add item with name, price, quantity
-    public void addItem(String name, double price, int quantity)
+    //METHOD 2 - Add item name, price, and quantity
+    public void addItemWithQuantity()
     {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter item name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter item price: ");
+        double price = scanner.nextDouble();
+        System.out.print("Enter item quantity: ");
+        int quantity = scanner.nextInt();
+
         addItem(name, price, quantity, 0);
     }
 
-    //METHOD 3 - Add item with name, price, quantity, discount
+    //METHOD 3 - Add item name, price, quantity, and discount
+    public void addItemWithDiscount()
+    {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter item name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter item price: ");
+        double price = scanner.nextDouble();
+        System.out.print("Enter item quantity: ");
+        int quantity = scanner.nextInt();
+        System.out.print("Enter discount percentage: ");
+        double discount = scanner.nextDouble();
+
+        addItem(name, price, quantity, discount);
+    }
+
+    //Main method that accepts all variables
     public void addItem(String name, double price, int quantity, double discount)
     {
-        //Make newItem class
         Item newItem = new Item(name, price, quantity, discount);
-        //Add the items to it
         cart.add(newItem);
-        //Print the added item
         System.out.println("Item added: " + newItem);
     }
 
-    //View cart method
-    public void viewCart() {
-        //Check if cart is empty then exit method
-        if (cart.isEmpty()) {
+    //View items in the cart
+    public void viewCart()
+    {
+        //Check if cart is empty
+        if (cart.isEmpty())
+        {
             System.out.println("The cart is empty.");
             return;
         }
-        //If cart has items print them
+
+        //If cart is not empty print the items
         System.out.println("Items in your cart:");
         for (Item item : cart)
         {
@@ -83,15 +114,14 @@ class ShoppingCart
         }
     }
 
-    //Calc the total price item with discount
+    //Calc the total cost of the items in the cart
     public double calculateTotal()
     {
-        //Init variable
+        //Init new variable
         double total = 0;
-        //Go thru cart
+        //Loop through the item list and add up
         for (Item item : cart)
         {
-            //Add up everything
             total += item.getTotalPrice();
         }
         //Return the value
@@ -104,21 +134,46 @@ public class ShoppingCartSystem
     public static void main(String[] args)
     {
         ShoppingCart cart = new ShoppingCart();
-        //Adding items using different overloaded methods
+        Scanner sc = new Scanner(System.in);
+        int choice;
 
-        //METHOD 1
-        cart.addItem("BMW", 30000);
-        //METHOD 2
-        cart.addItem("Mercedes-Benz", 35000, 10);
-        //METHOD 3
-        cart.addItem("Audi", 20000, 5, 50);
+        //Simple switch for selecting the programs options
+        do {
+            //Print the menu
+            System.out.println("\nShopping Cart Menu:");
+            System.out.println("1. Add item (name and price)");
+            System.out.println("2. Add item (name, price, and quantity)");
+            System.out.println("3. Add item (name, price, quantity, and discount)");
+            System.out.println("4. View cart");
+            System.out.println("5. Calculate total");
+            System.out.println("6. Exit");
+            System.out.print("Choose an option: ");
+            choice = sc.nextInt();
 
-        //Show cart
-        cart.viewCart();
-
-        //Set a total in a variable
-        double total = cart.calculateTotal();
-        //Print the total
-        System.out.printf("Total cost: $%.2f\n", total);
+            switch (choice)
+            {
+                case 1:
+                    cart.addItem();
+                    break;
+                case 2:
+                    cart.addItemWithQuantity();
+                    break;
+                case 3:
+                    cart.addItemWithDiscount();
+                    break;
+                case 4:
+                    cart.viewCart();
+                    break;
+                case 5:
+                    double total = cart.calculateTotal();
+                    System.out.printf("Total cost: $%.2f\n", total);
+                    break;
+                case 6:
+                    System.out.println("Exiting the Shopping Cart System.");
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }while(choice != 6);
     }
 }
